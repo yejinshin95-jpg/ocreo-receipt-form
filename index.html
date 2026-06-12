@@ -428,7 +428,7 @@ footer{background:#000000;padding:50px 76px;margin-top:40px}
       <div class="success-row"><span class="s-label">발행 금액</span><span class="s-val" id="s-amount"></span></div>
       <div class="success-row"><span class="s-label">처리 상태</span><span class="s-val" style="color:var(--accent)">신청 완료 · 처리 대기중</span></div>
     </div>
-    <button class="back-btn" onclick="location.reload()">마이페이지로 돌아가기</button>
+    <button class="back-btn" onclick="location.href='mypage.html'">마이페이지로 돌아가기</button>
   </div>
 
   </div><!-- /form-col -->
@@ -625,8 +625,25 @@ function submitForm(){
   if(!selectedType||!agreed)return;
   const now=new Date(),pad=n=>String(n).padStart(2,'0');
   const fv=document.getElementById('fairSelect').value;
+  const dateStr=`${now.getFullYear()}.${pad(now.getMonth()+1)}.${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+  /* 마이페이지로 전달할 신청 데이터 저장 */
+  const entry={
+    id: Date.now(),
+    fairKey: fv,
+    fair: fairLabels[fv],
+    type: selectedType,
+    typeLabel: typeLabels[selectedType],
+    amount: fairAmounts[fv],
+    date: dateStr,
+    status: 'pending'
+  };
+  const existing=JSON.parse(localStorage.getItem('receiptHistory')||'[]');
+  existing.unshift(entry);
+  localStorage.setItem('receiptHistory', JSON.stringify(existing));
+
   document.getElementById('s-fair').textContent=fairLabels[fv];
-  document.getElementById('s-date').textContent=`${now.getFullYear()}.${pad(now.getMonth()+1)}.${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  document.getElementById('s-date').textContent=dateStr;
   document.getElementById('s-type').textContent=typeLabels[selectedType];
   document.getElementById('s-amount').textContent=fairAmounts[fv];
   document.getElementById('formArea').style.display='none';
