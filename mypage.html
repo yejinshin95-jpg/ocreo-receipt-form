@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마이페이지 - OCREO</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F7F7;
+  --white:#FFFFFF;
+  --primary:#000000;
+  --primary-hover:#333333;
+  --accent:#308CF7;
+  --accent-light:rgba(48,140,247,0.07);
+  --border:rgba(0,0,0,0.10);
+  --text-main:#000000;
+  --text-sub:#4D4D4D;
+  --text-mid:#666666;
+  --text-hint:#999999;
+  --red:#EF4444;
+  --green:#10B981;
+  --input-bg:#F5F5F5;
+  --shadow:0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md:0 2px 10px rgba(0,0,0,0.08);
+  --radius:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text-main);min-height:100vh}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--border);height:60px;display:flex;align-items:center;padding:0 207px;position:sticky;top:0;z-index:100}
+.nav-inner{width:100%;max-width:1500px;margin:0 auto;display:flex;align-items:center;position:relative}
+.logo-link{display:flex;align-items:center;text-decoration:none;position:absolute;left:0;top:50%;transform:translateY(-50%)}
+.nav-links{display:flex;gap:30px;list-style:none;position:absolute;left:110px;top:50%;transform:translateY(-50%)}
+.nav-links a{font-size:14px;font-weight:400;color:var(--text-mid);text-decoration:none;display:flex;align-items:center;gap:2px;white-space:nowrap}
+.nav-links a:hover{color:var(--primary)}
+.nav-right{display:flex;align-items:center;gap:16px;position:absolute;right:0;top:50%;transform:translateY(-50%)}
+.avatar{width:36px;height:36px;background:#F0F0F0;border-radius:50%;overflow:hidden;flex-shrink:0;cursor:pointer}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.globe-btn{width:24px;height:24px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.globe-btn svg{width:24px;height:24px}
+
+/* PAGE HERO BANNER */
+.page-banner{background:var(--white);border-bottom:1px solid var(--border);padding:28px 207px}
+.page-banner-inner{max-width:1500px;margin:0 auto}
+.page-banner h2{font-size:22px;font-weight:700;letter-spacing:-.5px}
+
+/* LAYOUT */
+.page{max-width:1500px;margin:0 auto;padding:32px 207px 80px;display:grid;grid-template-columns:200px 1fr;gap:28px;align-items:start}
+
+/* SIDEBAR */
+.sidebar{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.sidebar-nav{list-style:none}
+.sidebar-nav li button{width:100%;text-align:left;padding:14px 20px;font-size:14px;font-weight:400;font-family:'Pretendard',-apple-system,sans-serif;color:var(--text-mid);background:none;border:none;cursor:pointer;border-left:3px solid transparent;transition:all .15s}
+.sidebar-nav li button:hover{color:var(--primary);background:#FAFAFA}
+.sidebar-nav li button.active{color:var(--primary);font-weight:700;border-left-color:var(--accent);background:#FAFBFE}
+
+/* MAIN CONTENT */
+.main-col{min-width:0}
+
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-header h3{font-size:14px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:8px}
+.section-header h3::before{content:'';width:4px;height:16px;background:var(--accent);border-radius:2px;display:inline-block;flex-shrink:0}
+
+/* YEAR GROUP */
+.year-group{margin-bottom:28px}
+.year-label{font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:12px}
+
+/* APPLICATION LIST (참가 신청 내역) */
+.app-list{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.app-item{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid #F0F2F8;cursor:pointer;transition:background .12s;gap:12px}
+.app-item:last-child{border-bottom:none}
+.app-item:hover{background:#FAFBFE}
+.app-info{flex:1;min-width:0}
+.app-name{font-size:14px;font-weight:500;color:var(--text-main);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app-date{font-size:12px;color:var(--text-hint)}
+.app-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.more-link{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-hint)}
+.more-link svg{opacity:.5}
+
+/* STATUS BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.badge-blue{background:#EFF6FF;color:#1D4ED8}
+.badge-green{background:#ECFDF5;color:#065F46}
+.badge-red{background:#FEF2F2;color:#991B1B}
+.badge-gray{background:#F3F4F6;color:#6B7280}
+.badge-orange{background:#FFF7ED;color:#C2410C}
+.badge-purple{background:#F5F3FF;color:#6D28D9}
+
+/* DIVIDER */
+.section-divider{height:1px;background:var(--border);margin:28px 0}
+
+/* 증빙 발행 신청 내역 */
+.receipt-list{display:flex;flex-direction:column;gap:12px}
+.receipt-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.receipt-card-header{display:flex;align-items:center;padding:14px 20px;gap:12px;border-bottom:1px solid #F0F2F8;cursor:pointer;transition:background .12s}
+.receipt-card-header:hover{background:#FAFBFE}
+.receipt-card-header .rch-left{flex:1;min-width:0}
+.rch-fair{font-size:13.5px;font-weight:600;color:var(--text-main);margin-bottom:3px}
+.rch-meta{font-size:12px;color:var(--text-hint);display:flex;gap:12px}
+.rch-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.receipt-card-body{padding:16px 20px;background:#FAFBFE;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.rcd-item{display:flex;flex-direction:column;gap:4px}
+.rcd-label{font-size:11px;color:var(--text-hint);font-weight:500;letter-spacing:.2px}
+.rcd-value{font-size:13px;color:var(--text-main);font-weight:500}
+.rcd-value.accent{color:var(--accent);font-weight:700}
+.receipt-card-footer{display:flex;justify-content:flex-end;padding:12px 20px;border-top:1px solid #F0F2F8;background:var(--white);gap:8px}
+.btn-sm{font-size:12px;font-weight:600;font-family:'Pretendard',-apple-system,sans-serif;padding:6px 14px;border-radius:4px;cursor:pointer;border:none;transition:background .15s}
+.btn-sm-outline{background:none;border:1px solid var(--border);color:var(--text-sub)}
+.btn-sm-outline:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.btn-sm-primary{background:var(--primary);color:#fff}
+.btn-sm-primary:hover{background:var(--primary-hover)}
+.btn-sm-accent{background:var(--accent-light);color:var(--accent)}
+.btn-sm-accent:hover{background:#dde5ff}
+
+/* 증빙 미신청 안내 배너 */
+.notice-banner{background:rgba(48,140,247,0.07);border:1px solid rgba(48,140,247,0.2);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.notice-banner .nb-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.notice-banner .nb-text{font-size:13px;color:var(--accent);line-height:1.65}
+.notice-banner .nb-text strong{font-weight:700}
+.notice-banner .nb-btn{flex-shrink:0;margin-left:auto;align-self:center}
+
+/* EMPTY STATE */
+.empty-state{background:var(--white);border-radius:var(--radius);border:1px dashed var(--border);padding:40px;text-align:center}
+.empty-state p{font-size:13.5px;color:var(--text-hint);line-height:1.7}
+
+/* DETAIL DRAWER (증빙 상세 패널) */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;animation:fadeIn .2s}
+.drawer-overlay.open{display:block}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:480px;background:var(--white);box-shadow:-4px 0 24px rgba(0,0,0,.1);z-index:201;display:flex;flex-direction:column;animation:slideIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.drawer-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+.drawer-header h3{font-size:16px;font-weight:700}
+.drawer-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-hint);padding:4px;display:flex;align-items:center;justify-content:center}
+.drawer-close:hover{color:var(--primary)}
+.drawer-body{flex:1;overflow-y:auto;padding:24px}
+.drawer-section{margin-bottom:24px}
+.drawer-section-title{font-size:11.5px;font-weight:700;color:var(--text-hint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.drawer-row{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid #F5F5F5;font-size:13.5px;gap:12px}
+.drawer-row:last-child{border-bottom:none}
+.dr-label{color:var(--text-hint);flex-shrink:0;width:110px}
+.dr-val{color:var(--text-main);font-weight:500;text-align:right;flex:1}
+.drawer-timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:14px;position:relative}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:7px;top:16px;bottom:-4px;width:1.5px;background:#E5E7EB}
+.tl-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff}
+.tl-dot.done{background:var(--accent)}
+.tl-dot.pending{background:#D1D5DB;color:#9CA3AF}
+.tl-content{padding-bottom:16px;flex:1}
+.tl-title{font-size:13px;font-weight:600;color:var(--text-main);margin-bottom:2px}
+.tl-date{font-size:11.5px;color:var(--text-hint)}
+.drawer-footer{padding:20px 24px;border-top:1px solid var(--border);display:flex;gap:8px}
+.drawer-footer button{flex:1;padding:12px;font-size:13.5px;font-weight:700;font-family:'Pretendard',-apple-system,sans-serif;border-radius:4px;cursor:pointer;border:none}
+.df-secondary{background:#F5F5F5;color:var(--text-sub)}
+.df-primary{background:var(--primary);color:#fff}
+
+/* FOOTER */
+footer{background:#000;padding:50px 76px;margin-top:40px}
+.footer-inner{max-width:1500px;margin:0 auto;display:flex;align-items:flex-start;gap:26px}
+.footer-logo-wrap{width:80px;flex-shrink:0;margin-right:10px}
+.footer-text-col{display:flex;flex-direction:column;gap:10px;flex:1}
+.footer-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.footer-info{font-size:14px;color:#999;font-family:'Pretendard',-apple-system,sans-serif}
+.footer-divider{width:1px;height:10px;background:#999;flex-shrink:0}
+.footer-sub{font-size:14px;color:#999;font-family:'Pretendard',-apple-system,sans-serif;margin-top:4px}
+.footer-lang{height:34px;display:flex;align-items:center;padding:0 10px 0 6px;border-radius:4px;border:1px solid #999;cursor:pointer;flex-shrink:0;background:none}
+.footer-lang-text{font-size:13px;color:#fff;font-family:'Pretendard',-apple-system,sans-serif;margin-left:6px}
+
+@media(max-width:1100px){
+  nav,.page-banner{padding:0 24px!important}
+  .page{padding:24px 24px 60px;grid-template-columns:1fr;padding:24px 16px 60px}
+  .sidebar{display:flex}
+  .sidebar-nav{display:flex;flex-direction:row;flex:1}
+  .sidebar-nav li{flex:1}
+  .sidebar-nav li button{text-align:center;border-left:none;border-bottom:3px solid transparent}
+  .sidebar-nav li button.active{border-left:none;border-bottom-color:var(--accent)}
+  .receipt-card-body{grid-template-columns:1fr 1fr}
+  .drawer{width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo-link">
+      <svg width="80" height="18" viewBox="0 0 80 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M71.307 17.3913C69.6466 17.3913 68.1749 17.0441 66.8919 16.3498C65.624 15.6404 64.6277 14.6743 63.9032 13.4517C63.1787 12.2139 62.8164 10.8026 62.8164 9.21771C62.8164 7.61771 63.1787 6.20639 63.9032 4.98375C64.6277 3.74601 65.624 2.77997 66.8919 2.08564C68.1598 1.3762 69.6164 1.02148 71.2617 1.02148C72.9221 1.02148 74.3862 1.3762 75.6541 2.08564C76.9221 2.77997 77.9183 3.74601 78.6428 4.98375C79.3674 6.20639 79.7296 7.61771 79.7296 9.21771C79.7296 10.8026 79.3674 12.2139 78.6428 13.4517C77.9334 14.6743 76.9447 15.6404 75.6768 16.3498C74.4089 17.0441 72.9523 17.3913 71.307 17.3913ZM71.307 13.5422C72.1221 13.5422 72.839 13.3611 73.4579 12.9988C74.0768 12.6215 74.5598 12.1083 74.907 11.4592C75.2541 10.8102 75.4277 10.063 75.4277 9.21771C75.4277 8.37243 75.2466 7.62526 74.8843 6.9762C74.5372 6.31205 74.0466 5.79884 73.4126 5.43658C72.7938 5.05922 72.0768 4.87054 71.2617 4.87054C70.4617 4.87054 69.7447 5.05922 69.1107 5.43658C68.4919 5.79884 68.0013 6.31205 67.639 6.9762C67.2919 7.62526 67.1183 8.37243 67.1183 9.21771C67.1183 10.063 67.2994 10.8102 67.6617 11.4592C68.024 12.1083 68.5145 12.6215 69.1334 12.9988C69.7674 13.3611 70.4919 13.5422 71.307 13.5422Z" fill="black"/><path d="M50.3418 1.27148V17.1205H61.1192V13.2715H54.5305V11.0526V7.31677V5.12054H60.9607V1.27148H50.3418Z" fill="black"/><path d="M35.3301 17.1205V1.27148H41.8961C43.0886 1.27148 44.1452 1.50545 45.0659 1.97337C45.9867 2.4262 46.7037 3.06016 47.2169 3.87526C47.7452 4.67526 48.0093 5.60356 48.0093 6.66016C48.0093 7.71677 47.7452 8.66016 47.2169 9.49035C46.7037 10.3054 45.9867 10.947 45.0659 11.4149C44.1452 11.8677 43.0886 12.0941 41.8961 12.0941H39.5188V17.1205H35.3301ZM43.8433 17.1205L40.3112 10.8941L43.4584 8.53941L48.6433 17.1205H43.8433ZM39.5188 8.24507H41.6697C42.0471 8.24507 42.3791 8.17715 42.6659 8.0413C42.9527 7.90545 43.1791 7.71677 43.3452 7.47526C43.5112 7.23375 43.5942 6.96205 43.5942 6.66016C43.5942 6.20733 43.4131 5.83752 43.0508 5.55073C42.7037 5.24884 42.2433 5.0979 41.6697 5.0979H39.5188V8.24507Z" fill="black"/><path d="M26.1486 17.3925C24.5637 17.3925 23.16 17.0453 21.9373 16.3509C20.7298 15.6415 19.7788 14.6755 19.0845 13.4528C18.3901 12.2151 18.043 10.7962 18.043 9.19623C18.043 7.59623 18.3901 6.18491 19.0845 4.96226C19.7788 3.72453 20.7298 2.75849 21.9373 2.06415C23.16 1.35472 24.5637 1 26.1486 1C27.3713 1 28.4732 1.21132 29.4543 1.63396C30.4354 2.0566 31.2807 2.64528 31.9901 3.4C32.6996 4.15472 33.243 5.03019 33.6203 6.02641L29.6354 7.29434C29.4241 6.79623 29.1524 6.36604 28.8203 6.00377C28.4883 5.62641 28.0958 5.33962 27.643 5.1434C27.2052 4.94717 26.7071 4.84906 26.1486 4.84906C25.409 4.84906 24.7524 5.03774 24.1788 5.41509C23.6052 5.77736 23.1524 6.28302 22.8203 6.93208C22.5033 7.58113 22.3449 8.33585 22.3449 9.19623C22.3449 10.0415 22.5109 10.7962 22.843 11.4604C23.175 12.1094 23.6279 12.6226 24.2015 13C24.7901 13.3623 25.4618 13.5434 26.2166 13.5434C26.8052 13.5434 27.3109 13.4453 27.7335 13.2491C28.1713 13.0377 28.5411 12.7509 28.843 12.3887C29.16 12.0113 29.4317 11.5736 29.6581 11.0755L33.643 12.3434C33.2807 13.3396 32.7449 14.2226 32.0354 14.9925C31.326 15.7472 30.4732 16.3358 29.4769 16.7585C28.4807 17.1811 27.3713 17.3925 26.1486 17.3925Z" fill="black"/><path d="M8.49057 17.3913C6.83019 17.3913 5.35849 17.0441 4.07547 16.3498C2.80755 15.6404 1.81132 14.6743 1.08679 13.4517C0.362264 12.2139 0 10.8026 0 9.21771C0 7.61771 0.362264 6.20639 1.08679 4.98375C1.81132 3.74601 2.80755 2.77997 4.07547 2.08564C5.3434 1.3762 6.8 1.02148 8.44528 1.02148C10.1057 1.02148 11.5698 1.3762 12.8377 2.08564C14.1057 2.77997 15.1019 3.74601 15.8264 4.98375C16.5509 6.20639 16.9132 7.61771 16.9132 9.21771C16.9132 10.8026 16.5509 12.2139 15.8264 13.4517C15.117 14.6743 14.1283 15.6404 12.8604 16.3498C11.5925 17.0441 10.1358 17.3913 8.49057 17.3913ZM8.49057 13.5422C9.30566 13.5422 10.0226 13.3611 10.6415 12.9988C11.2604 12.6215 11.7434 12.1083 12.0906 11.4592C12.4377 10.8102 12.6113 10.063 12.6113 9.21771C12.6113 8.37243 12.4302 7.62526 12.0679 6.9762C11.7208 6.31205 11.2302 5.79884 10.5962 5.43658C9.97736 5.05922 9.26038 4.87054 8.44528 4.87054C7.64528 4.87054 6.9283 5.05922 6.29434 5.43658C5.67547 5.79884 5.18491 6.31205 4.82264 6.9762C4.47547 7.62526 4.30189 8.37243 4.30189 9.21771C4.30189 10.063 4.48302 10.8102 4.84528 11.4592C5.20755 12.1083 5.69811 12.6215 6.31698 12.9988C6.95094 13.3611 7.67547 13.5422 8.49057 13.5422Z" fill="black"/><path d="M55.5736 7.63281H60.754V10.6517H54.9336L55.5736 7.63281Z" fill="black"/></svg>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">페어 <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1.5 3.5L6 8L10.5 3.5" stroke="#999" stroke-width="1.5"/></svg></a></li>
+      <li><a href="#">참가 신청 <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1.5 3.5L6 8L10.5 3.5" stroke="#999" stroke-width="1.5"/></svg></a></li>
+      <li><a href="#">페어스토리</a></li>
+      <li><a href="#">포트폴리오</a></li>
+      <li><a href="#">공지사항</a></li>
+      <li><a href="#">바이어 등록</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' fill='%23E0E0E0'/%3E%3C/svg%3E" alt="profile"></div>
+      <button class="globe-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M22.5882 11.9997C22.5897 14.0798 21.9777 16.1142 20.8285 17.8485C19.6794 19.5829 18.0442 20.9403 16.1273 21.7512C14.2104 22.562 12.0968 22.7902 10.0508 22.4073C8.00485 22.0244 6.1172 21.0473 4.62384 19.5982C3.13048 18.1492 2.09767 16.2924 1.6545 14.26C1.21133 12.2277 1.37747 10.1098 2.13215 8.17127C2.88684 6.23273 4.19658 4.55947 5.89766 3.36066C7.59874 2.16185 9.61569 1.49067 11.6964 1.43103C11.8966 1.40515 12.0993 1.40515 12.2996 1.43103C15.0536 1.50757 17.6692 2.65437 19.5905 4.62767C21.5118 6.60097 22.5872 9.24654 22.5882 11.9997Z" stroke="black" stroke-width="1.2"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE BANNER -->
+<div class="page-banner">
+  <div class="page-banner-inner">
+    <h2>마이페이지</h2>
+  </div>
+</div>
+
+<!-- 2-COLUMN LAYOUT -->
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <ul class="sidebar-nav">
+      <li><button onclick="switchTab('info')">내정보</button></li>
+      <li><button class="active" onclick="switchTab('history')">신청 내역</button></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-col">
+
+    <!-- ── 신청 내역 탭 ── -->
+    <div id="tab-history">
+
+      <!-- 참가 신청 내역 -->
+      <div class="section-header">
+        <h3>참가 신청 내역</h3>
+      </div>
+
+      <div class="year-group">
+        <p class="year-label">2026년</p>
+        <div class="app-list">
+          <div class="app-item">
+            <div class="app-info">
+              <p class="app-name">서울일러스트레이션페어 V.21</p>
+              <p class="app-date">26.07.30 ~ 08.02 &nbsp;·&nbsp; 신청일 26.05.21</p>
+            </div>
+            <div class="app-right">
+              <span class="badge badge-blue">신청 완료</span>
+              <span class="more-link">자세히 보기 <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            </div>
+          </div>
+          <div class="app-item">
+            <div class="app-info">
+              <p class="app-name">부산일러스트레이션페어 V.7</p>
+              <p class="app-date">26.03.13 ~ 15 &nbsp;·&nbsp; 신청일 26.02.02</p>
+            </div>
+            <div class="app-right">
+              <span class="badge badge-red">참가 취소</span>
+              <span class="more-link">자세히 보기 <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="year-group">
+        <p class="year-label">2025년</p>
+        <div class="app-list">
+          <div class="app-item">
+            <div class="app-info">
+              <p class="app-name">크리에이터 인증 신청</p>
+              <p class="app-date">신청일 25.08.25</p>
+            </div>
+            <div class="app-right">
+              <span class="badge badge-green">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="#065F46" stroke-width="1.5" stroke-linecap="round"/></svg>
+                인증 완료
+              </span>
+              <span class="more-link">자세히 보기 <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIVIDER -->
+      <div class="section-divider"></div>
+
+      <!-- 증빙 발행 신청 내역 -->
+      <div class="section-header" style="margin-bottom:12px">
+        <h3>증빙 발행 신청 내역</h3>
+      </div>
+
+      <!-- 신청 가능 안내 배너 — V.21 신청 기간 중 -->
+      <div class="notice-banner">
+        <span class="nb-icon">💡</span>
+        <div class="nb-text">
+          <strong>서울일러스트레이션페어 V.21</strong> 증빙 발행 신청 기간 중입니다.
+          &nbsp;마감: <strong>2026/08/13</strong> (세금계산서) / <strong>2026/08/07</strong> (현금영수증)
+        </div>
+        <div class="nb-btn">
+          <button class="btn-sm btn-sm-primary" onclick="location.href='증빙발행_신청폼_v7.html'">신청하기</button>
+        </div>
+      </div>
+
+      <!-- 증빙 내역 목록 -->
+      <div class="receipt-list" id="receiptList"></div><!-- /receipt-list -->
+
+    </div><!-- /tab-history -->
+
+    <!-- ── 내정보 탭 (placeholder) ── -->
+    <div id="tab-info" style="display:none">
+      <div class="section-header"><h3>내정보</h3></div>
+      <div class="empty-state"><p>내정보 섹션은 별도 와이어프레임으로 제작 예정입니다.</p></div>
+    </div>
+
+  </div><!-- /main-col -->
+
+</div><!-- /page -->
+
+<!-- ══ DRAWER: 동적 신청 내역 상세 ══ -->
+<div class="drawer-overlay" id="overlay-dyn" onclick="closeDrawer('dyn')">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-header">
+      <h3>증빙 발행 상세</h3>
+      <button class="drawer-close" onclick="closeDrawer('dyn')">✕</button>
+    </div>
+    <div class="drawer-body" id="dyn-drawer-body"></div>
+    <div class="drawer-footer">
+      <button class="df-secondary" onclick="closeDrawer('dyn')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DRAWER: 세금계산서 발행 완료 상세 ══ -->
+<div class="drawer-overlay" id="overlay-tax-complete" onclick="closeDrawer('tax-complete')">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-header">
+      <h3>증빙 발행 상세</h3>
+      <button class="drawer-close" onclick="closeDrawer('tax-complete')">✕</button>
+    </div>
+    <div class="drawer-body">
+
+      <div class="drawer-section">
+        <p class="drawer-section-title">기본 정보</p>
+        <div class="drawer-row"><span class="dr-label">페어</span><span class="dr-val">부산일러스트레이션페어 V.7</span></div>
+        <div class="drawer-row"><span class="dr-label">증빙 유형</span><span class="dr-val">세금계산서</span></div>
+        <div class="drawer-row"><span class="dr-label">발행 금액</span><span class="dr-val" style="color:var(--accent);font-weight:700">₩1,683,000 (VAT 포함)</span></div>
+        <div class="drawer-row"><span class="dr-label">신청일</span><span class="dr-val">2026.02.05</span></div>
+        <div class="drawer-row"><span class="dr-label">발행일</span><span class="dr-val">2026.03.13</span></div>
+        <div class="drawer-row"><span class="dr-label">처리 상태</span><span class="dr-val"><span class="badge badge-green">발행 완료</span></span></div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-section-title">발행 정보</p>
+        <div class="drawer-row"><span class="dr-label">상호</span><span class="dr-val">YJ 스튜디오</span></div>
+        <div class="drawer-row"><span class="dr-label">대표자명</span><span class="dr-val">김예진</span></div>
+        <div class="drawer-row"><span class="dr-label">사업자번호</span><span class="dr-val">123-45-67890</span></div>
+        <div class="drawer-row"><span class="dr-label">업태 / 업종</span><span class="dr-val">서비스업 / 예술창작업</span></div>
+        <div class="drawer-row"><span class="dr-label">발행 이메일</span><span class="dr-val">yejinshin95@gmail.com</span></div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-section-title">처리 이력</p>
+        <div class="drawer-timeline">
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-content">
+              <p class="tl-title">신청 완료</p>
+              <p class="tl-date">2026.02.05 14:32</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-content">
+              <p class="tl-title">사무국 확인 중</p>
+              <p class="tl-date">2026.02.06 10:00</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-content">
+              <p class="tl-title">세금계산서 발행 완료</p>
+              <p class="tl-date">2026.03.13 09:15</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="drawer-footer">
+      <button class="df-secondary" onclick="closeDrawer('tax-complete')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DRAWER: 현금영수증 처리 중 상세 ══ -->
+<div class="drawer-overlay" id="overlay-cash-pending" onclick="closeDrawer('cash-pending')">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-header">
+      <h3>증빙 발행 상세</h3>
+      <button class="drawer-close" onclick="closeDrawer('cash-pending')">✕</button>
+    </div>
+    <div class="drawer-body">
+
+      <div class="drawer-section">
+        <p class="drawer-section-title">기본 정보</p>
+        <div class="drawer-row"><span class="dr-label">페어</span><span class="dr-val">서울일러스트레이션페어 V.21</span></div>
+        <div class="drawer-row"><span class="dr-label">증빙 유형</span><span class="dr-val">현금영수증 (개인소득공제)</span></div>
+        <div class="drawer-row"><span class="dr-label">발행 금액</span><span class="dr-val" style="color:var(--accent);font-weight:700">₩792,000 (VAT 포함)</span></div>
+        <div class="drawer-row"><span class="dr-label">신청일</span><span class="dr-val">2026.06.10</span></div>
+        <div class="drawer-row"><span class="dr-label">발행 예정일</span><span class="dr-val">2026.08.07 이내</span></div>
+        <div class="drawer-row"><span class="dr-label">처리 상태</span><span class="dr-val"><span class="badge badge-orange">처리 중</span></span></div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-section-title">발행 정보</p>
+        <div class="drawer-row"><span class="dr-label">발행 번호</span><span class="dr-val">010-1234-5678</span></div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-section-title">처리 이력</p>
+        <div class="drawer-timeline">
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-content">
+              <p class="tl-title">신청 완료</p>
+              <p class="tl-date">2026.06.10 11:05</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot done">✓</div>
+            <div class="tl-content">
+              <p class="tl-title">사무국 접수 완료</p>
+              <p class="tl-date">2026.06.11 09:00</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot pending">○</div>
+            <div class="tl-content">
+              <p class="tl-title" style="color:var(--text-hint)">현금영수증 발행</p>
+              <p class="tl-date">발행 예정일 2026.08.07 이내</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="drawer-footer">
+      <button class="df-secondary" onclick="closeDrawer('cash-pending')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo-wrap">
+      <svg width="80" height="18" viewBox="0 0 80 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M71.307 17.3913C69.6466 17.3913 68.1749 17.0441 66.8919 16.3498C65.624 15.6404 64.6277 14.6743 63.9032 13.4517C63.1787 12.2139 62.8164 10.8026 62.8164 9.21771C62.8164 7.61771 63.1787 6.20639 63.9032 4.98375C64.6277 3.74601 65.624 2.77997 66.8919 2.08564C68.1598 1.3762 69.6164 1.02148 71.2617 1.02148C72.9221 1.02148 74.3862 1.3762 75.6541 2.08564C76.9221 2.77997 77.9183 3.74601 78.6428 4.98375C79.3674 6.20639 79.7296 7.61771 79.7296 9.21771C79.7296 10.8026 79.3674 12.2139 78.6428 13.4517C77.9334 14.6743 76.9447 15.6404 75.6768 16.3498C74.4089 17.0441 72.9523 17.3913 71.307 17.3913ZM71.307 13.5422C72.1221 13.5422 72.839 13.3611 73.4579 12.9988C74.0768 12.6215 74.5598 12.1083 74.907 11.4592C75.2541 10.8102 75.4277 10.063 75.4277 9.21771C75.4277 8.37243 75.2466 7.62526 74.8843 6.9762C74.5372 6.31205 74.0466 5.79884 73.4126 5.43658C72.7938 5.05922 72.0768 4.87054 71.2617 4.87054C70.4617 4.87054 69.7447 5.05922 69.1107 5.43658C68.4919 5.79884 68.0013 6.31205 67.639 6.9762C67.2919 7.62526 67.1183 8.37243 67.1183 9.21771C67.1183 10.063 67.2994 10.8102 67.6617 11.4592C68.024 12.1083 68.5145 12.6215 69.1334 12.9988C69.7674 13.3611 70.4919 13.5422 71.307 13.5422Z" fill="white"/><path d="M50.3418 1.27148V17.1205H61.1192V13.2715H54.5305V11.0526V7.31677V5.12054H60.9607V1.27148H50.3418Z" fill="white"/><path d="M35.3301 17.1205V1.27148H41.8961C43.0886 1.27148 44.1452 1.50545 45.0659 1.97337C45.9867 2.4262 46.7037 3.06016 47.2169 3.87526C47.7452 4.67526 48.0093 5.60356 48.0093 6.66016C48.0093 7.71677 47.7452 8.66016 47.2169 9.49035C46.7037 10.3054 45.9867 10.947 45.0659 11.4149C44.1452 11.8677 43.0886 12.0941 41.8961 12.0941H39.5188V17.1205H35.3301ZM43.8433 17.1205L40.3112 10.8941L43.4584 8.53941L48.6433 17.1205H43.8433ZM39.5188 8.24507H41.6697C42.0471 8.24507 42.3791 8.17715 42.6659 8.0413C42.9527 7.90545 43.1791 7.71677 43.3452 7.47526C43.5112 7.23375 43.5942 6.96205 43.5942 6.66016C43.5942 6.20733 43.4131 5.83752 43.0508 5.55073C42.7037 5.24884 42.2433 5.0979 41.6697 5.0979H39.5188V8.24507Z" fill="white"/><path d="M26.1486 17.3925C24.5637 17.3925 23.16 17.0453 21.9373 16.3509C20.7298 15.6415 19.7788 14.6755 19.0845 13.4528C18.3901 12.2151 18.043 10.7962 18.043 9.19623C18.043 7.59623 18.3901 6.18491 19.0845 4.96226C19.7788 3.72453 20.7298 2.75849 21.9373 2.06415C23.16 1.35472 24.5637 1 26.1486 1C27.3713 1 28.4732 1.21132 29.4543 1.63396C30.4354 2.0566 31.2807 2.64528 31.9901 3.4C32.6996 4.15472 33.243 5.03019 33.6203 6.02641L29.6354 7.29434C29.4241 6.79623 29.1524 6.36604 28.8203 6.00377C28.4883 5.62641 28.0958 5.33962 27.643 5.1434C27.2052 4.94717 26.7071 4.84906 26.1486 4.84906C25.409 4.84906 24.7524 5.03774 24.1788 5.41509C23.6052 5.77736 23.1524 6.28302 22.8203 6.93208C22.5033 7.58113 22.3449 8.33585 22.3449 9.19623C22.3449 10.0415 22.5109 10.7962 22.843 11.4604C23.175 12.1094 23.6279 12.6226 24.2015 13C24.7901 13.3623 25.4618 13.5434 26.2166 13.5434C26.8052 13.5434 27.3109 13.4453 27.7335 13.2491C28.1713 13.0377 28.5411 12.7509 28.843 12.3887C29.16 12.0113 29.4317 11.5736 29.6581 11.0755L33.643 12.3434C33.2807 13.3396 32.7449 14.2226 32.0354 14.9925C31.326 15.7472 30.4732 16.3358 29.4769 16.7585C28.4807 17.1811 27.3713 17.3925 26.1486 17.3925Z" fill="white"/><path d="M8.49057 17.3913C6.83019 17.3913 5.35849 17.0441 4.07547 16.3498C2.80755 15.6404 1.81132 14.6743 1.08679 13.4517C0.362264 12.2139 0 10.8026 0 9.21771C0 7.61771 0.362264 6.20639 1.08679 4.98375C1.81132 3.74601 2.80755 2.77997 4.07547 2.08564C5.3434 1.3762 6.8 1.02148 8.44528 1.02148C10.1057 1.02148 11.5698 1.3762 12.8377 2.08564C14.1057 2.77997 15.1019 3.74601 15.8264 4.98375C16.5509 6.20639 16.9132 7.61771 16.9132 9.21771C16.9132 10.8026 16.5509 12.2139 15.8264 13.4517C15.117 14.6743 14.1283 15.6404 12.8604 16.3498C11.5925 17.0441 10.1358 17.3913 8.49057 17.3913ZM8.49057 13.5422C9.30566 13.5422 10.0226 13.3611 10.6415 12.9988C11.2604 12.6215 11.7434 12.1083 12.0906 11.4592C12.4377 10.8102 12.6113 10.063 12.6113 9.21771C12.6113 8.37243 12.4302 7.62526 12.0679 6.9762C11.7208 6.31205 11.2302 5.79884 10.5962 5.43658C9.97736 5.05922 9.26038 4.87054 8.44528 4.87054C7.64528 4.87054 6.9283 5.05922 6.29434 5.43658C5.67547 5.79884 5.18491 6.31205 4.82264 6.9762C4.47547 7.62526 4.30189 8.37243 4.30189 9.21771C4.30189 10.063 4.48302 10.8102 4.84528 11.4592C5.20755 12.1083 5.69811 12.6215 6.31698 12.9988C6.95094 13.3611 7.67547 13.5422 8.49057 13.5422Z" fill="white"/><path d="M55.5736 7.63281H60.754V10.6517H54.9336L55.5736 7.63281Z" fill="white"/></svg>
+    </div>
+    <div class="footer-text-col">
+      <div class="footer-row">
+        <span class="footer-info">(주) 오씨메이커스</span>
+        <span class="footer-divider"></span>
+        <span class="footer-info">대표이사 : 주정연</span>
+        <span class="footer-divider"></span>
+        <span class="footer-info">주소 : 경기도 과천시 과천대로 7길 33, 디테크타워 A동 905호</span>
+      </div>
+      <div class="footer-row">
+        <span class="footer-info">사업자등록번호 : 821-87-00238</span>
+        <span class="footer-divider"></span>
+        <span class="footer-info">참가 및 관람 문의 : sif@seoulillustrationfair.co.kr</span>
+        <span class="footer-divider"></span>
+        <span class="footer-info">오크레오 문의 : support@ocreo.kr</span>
+      </div>
+      <div class="footer-sub">THE SEOUL ILLUSTRATION FAIR</div>
+    </div>
+    <button class="footer-lang">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.0588 7.99988C15.0598 9.3866 14.6518 10.7429 13.8857 11.8991C13.1196 13.0554 12.0294 13.9603 10.7515 14.5009C9.47357 15.0414 8.06454 15.1935 6.70055 14.9383C5.33657 14.683 4.07813 14.0316 3.08256 13.0656C2.08699 12.0995 1.39844 10.8617 1.103 9.50677C0.807553 8.15185 0.918311 6.73996 1.42144 5.4476C1.92456 4.15523 2.79772 3.03973 3.93177 2.24052C5.06582 1.44131 6.41046 0.993862 7.79759 0.954101" stroke="white" stroke-width="1.2"/></svg>
+      <span class="footer-lang-text">English</span>
+    </button>
+  </div>
+</footer>
+
+<script>
+/* localStorage에서 증빙 신청 내역 로드 */
+const statusBadge = {
+  pending: '<span class="badge badge-orange">처리 중</span>',
+  done:    '<span class="badge badge-green"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="#065F46" stroke-width="1.5" stroke-linecap="round"/></svg> 발행 완료</span>'
+};
+
+function renderReceiptList() {
+  const list = JSON.parse(localStorage.getItem('receiptHistory') || '[]');
+  const container = document.getElementById('receiptList');
+
+  if (list.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>아직 증빙 발행 신청 내역이 없습니다.</p></div>';
+    return;
+  }
+
+  container.innerHTML = list.map((e, i) => `
+    <div class="receipt-card">
+      <div class="receipt-card-header" onclick="openDynDrawer(${i})">
+        <div class="rch-left">
+          <p class="rch-fair">${e.fair}</p>
+          <div class="rch-meta">
+            <span>신청일 ${e.date}</span>
+            <span>·</span>
+            <span>${e.typeLabel}</span>
+          </div>
+        </div>
+        <div class="rch-right">
+          ${statusBadge[e.status] || statusBadge.pending}
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4L10 8L6 12" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="receipt-card-body">
+        <div class="rcd-item"><span class="rcd-label">증빙 유형</span><span class="rcd-value">${e.typeLabel}</span></div>
+        <div class="rcd-item"><span class="rcd-label">발행 금액</span><span class="rcd-value accent">${e.amount}</span></div>
+        <div class="rcd-item"><span class="rcd-label">신청일시</span><span class="rcd-value">${e.date}</span></div>
+        <div class="rcd-item"><span class="rcd-label">상태</span><span class="rcd-value">${statusBadge[e.status] || statusBadge.pending}</span></div>
+      </div>
+      <div class="receipt-card-footer">
+        <button class="btn-sm btn-sm-outline" onclick="openDynDrawer(${i})">상세 보기</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openDynDrawer(idx) {
+  const list = JSON.parse(localStorage.getItem('receiptHistory') || '[]');
+  const e = list[idx];
+  if (!e) return;
+
+  const tlDone = `<div class="tl-dot done">✓</div>`;
+  const tlPend = `<div class="tl-dot pending">○</div>`;
+
+  document.getElementById('dyn-drawer-body').innerHTML = `
+    <div class="drawer-section">
+      <p class="drawer-section-title">기본 정보</p>
+      <div class="drawer-row"><span class="dr-label">페어</span><span class="dr-val">${e.fair}</span></div>
+      <div class="drawer-row"><span class="dr-label">증빙 유형</span><span class="dr-val">${e.typeLabel}</span></div>
+      <div class="drawer-row"><span class="dr-label">발행 금액</span><span class="dr-val" style="color:var(--accent);font-weight:700">${e.amount} (VAT 포함)</span></div>
+      <div class="drawer-row"><span class="dr-label">신청일시</span><span class="dr-val">${e.date}</span></div>
+      <div class="drawer-row"><span class="dr-label">처리 상태</span><span class="dr-val">${statusBadge[e.status] || statusBadge.pending}</span></div>
+    </div>
+    <div class="drawer-section">
+      <p class="drawer-section-title">처리 이력</p>
+      <div class="drawer-timeline">
+        <div class="tl-item">${tlDone}<div class="tl-content"><p class="tl-title">신청 완료</p><p class="tl-date">${e.date}</p></div></div>
+        <div class="tl-item">${e.status === 'done' ? tlDone : tlPend}<div class="tl-content"><p class="tl-title" style="${e.status !== 'done' ? 'color:var(--text-hint)' : ''}">사무국 처리 완료</p><p class="tl-date">${e.status === 'done' ? '처리 완료' : '처리 대기 중'}</p></div></div>
+        <div class="tl-item">${e.status === 'done' ? tlDone : tlPend}<div class="tl-content"><p class="tl-title" style="${e.status !== 'done' ? 'color:var(--text-hint)' : ''}">증빙 발행 완료</p><p class="tl-date">${e.status === 'done' ? '발행 완료' : '발행 예정'}</p></div></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('overlay-dyn').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+renderReceiptList();
+
+function switchTab(tab) {
+  document.getElementById('tab-history').style.display = tab === 'history' ? 'block' : 'none';
+  document.getElementById('tab-info').style.display = tab === 'info' ? 'block' : 'none';
+  document.querySelectorAll('.sidebar-nav button').forEach(btn => btn.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+function openDrawer(id) {
+  document.getElementById('overlay-' + id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDrawer(id) {
+  document.getElementById('overlay-' + id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.drawer-overlay.open').forEach(el => {
+      el.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  }
+});
+</script>
+</body>
+</html>
