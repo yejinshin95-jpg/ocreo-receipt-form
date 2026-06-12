@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>증빙 발행 신청 - OCREO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+:root{
+  /* OCREO 디자인 가이드 토큰 */
+  --bg:#F7F7F7;
+  --white:#FFFFFF;
+  --primary:#000000;        /* emphasis1 */
+  --primary-hover:#333333;
+  --accent:#308CF7;         /* primary/normal */
+  --accent-light:rgba(48,140,247,0.07);
+  --border:rgba(0,0,0,0.10);
+  --border-focus:#308CF7;
+  --text-main:#000000;      /* emphasis1 */
+  --text-sub:#4D4D4D;       /* emphasis2 */
+  --text-mid:#666666;       /* emphasis3 — GNB 메뉴 */
+  --text-hint:#999999;      /* emphasis4 */
+  --text-light:#F5F5F5;     /* emphasis6 — 인풋 bg */
+  --red:#EF4444;
+  --input-bg:#F5F5F5;       /* emphasis6 */
+  --input-bg-focus:#FAFAFA;
+  --shadow:0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md:0 2px 10px rgba(0,0,0,0.08);
+  --radius:8px;             /* card */
+  --ir:4px;                 /* input radius */
+  --spec-bg:#FAFBFE;--spec-border:#E2E6F5;--spec-label:#8FA3CC;--spec-text:#4A5568;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text-main);min-height:100vh;font-family:'Pretendard',-apple-system,sans-serif}
+
+/* NAV — OCREO 디자인 가이드 */
+nav{background:var(--white);border-bottom:1px solid var(--border);height:60px;display:flex;align-items:center;padding:0 207px;position:sticky;top:0;z-index:100}
+.nav-inner{width:100%;max-width:1500px;margin:0 auto;display:flex;align-items:center;position:relative}
+.logo-link{display:flex;align-items:center;text-decoration:none;position:absolute;left:0;top:50%;transform:translateY(-50%)}
+.logo-svg{height:18px;width:auto}
+.nav-links{display:flex;gap:30px;list-style:none;position:absolute;left:110px;top:50%;transform:translateY(-50%)}
+.nav-links a{font-size:14px;font-weight:400;color:var(--text-mid);text-decoration:none;line-height:20px;display:flex;align-items:center;gap:2px;white-space:nowrap}
+.nav-links a:hover{color:var(--primary)}
+.nav-links a .arrow{width:12px;height:12px;opacity:.6}
+.nav-right{display:flex;align-items:center;gap:16px;position:absolute;right:0;top:50%;transform:translateY(-50%)}
+.avatar{width:36px;height:36px;background:#F0F0F0;border-radius:50%;overflow:hidden;flex-shrink:0;cursor:pointer}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.globe-btn{width:24px;height:24px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;color:var(--text-main)}
+.globe-btn svg{width:24px;height:24px}
+
+/* PAGE LAYOUT — 2컬럼 */
+.page{max-width:1280px;margin:0 auto;padding:48px 32px 80px;display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
+.form-col{min-width:0}
+.spec-col{position:sticky;top:76px}
+
+/* HERO */
+.hero-card{background:var(--white);border-radius:var(--radius);padding:36px 40px;text-align:center;box-shadow:var(--shadow-md);margin-bottom:24px;border:1px solid var(--border)}
+.hero-card h1{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:12px}
+.hero-card p{font-size:13.5px;color:var(--text-sub);line-height:1.7}
+.notice-box{background:rgba(48,140,247,0.07);border-radius:4px;padding:16px 20px;margin:20px 0 0;font-size:14px;color:var(--accent);line-height:1.7;border-left:3px solid var(--accent);text-align:left}
+.notice-box strong{font-weight:600}
+
+/* FORM CARD */
+.form-card{background:var(--white);border-radius:var(--radius);padding:32px 36px;box-shadow:var(--shadow);margin-bottom:20px;border:1px solid var(--border)}
+.section-title{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;line-height:20px}
+.section-title::before{content:'';width:4px;height:16px;background:var(--accent);border-radius:2px;display:inline-block;flex-shrink:0}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;border-radius:50%;flex-shrink:0}
+.field-num{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;background:#E8ECF8;color:var(--accent);font-size:10px;font-weight:700;border-radius:4px;margin-right:4px;flex-shrink:0}
+
+/* FIELDS */
+.field{margin-bottom:20px}
+.field:last-child{margin-bottom:0}
+label{display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:12px;line-height:20px}
+label .req{color:var(--red);margin-left:3px}
+input[type="text"],input[type="email"],input[type="date"],select,textarea{width:100%;border:none;border-radius:var(--ir);padding:14px;font-size:14px;font-family:'Pretendard',-apple-system,sans-serif;color:var(--text-main);background:var(--input-bg);outline:none;transition:background .15s,box-shadow .15s;appearance:none;-webkit-appearance:none;line-height:20px}
+input:focus,select:focus,textarea:focus{background:var(--input-bg-focus);box-shadow:0 0 0 2px var(--accent);outline:none}
+input::placeholder,textarea::placeholder{color:var(--text-hint);font-size:13.5px}
+input[readonly]{background:var(--input-bg);color:var(--text-sub);cursor:not-allowed;opacity:.7}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+.readonly-field{background:var(--input-bg);border:none;border-radius:var(--ir);padding:14px;font-size:14px;color:var(--text-sub);display:flex;align-items:center;gap:8px;line-height:20px}
+.readonly-badge{font-size:10px;background:#E8ECF8;color:var(--text-sub);padding:2px 6px;border-radius:4px;font-weight:500;white-space:nowrap;margin-left:auto}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* PAYMENT LIST */
+.payment-list{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.payment-item{display:flex;align-items:center;padding:12px 16px;font-size:13.5px;border-bottom:1px solid #F0F2F8;gap:10px}
+.payment-item:last-child{border-bottom:none}
+.p-label{font-weight:500;color:var(--text-main);flex-shrink:0;min-width:56px}
+.p-date{color:var(--text-hint);font-size:12px;flex:1}
+.p-amount{font-weight:600;color:var(--primary);white-space:nowrap}
+.payment-item.issued{background:#F8F9FE}
+.payment-item.issued .p-label,.payment-item.issued .p-amount{color:var(--text-hint)}
+.issued-badge{font-size:10px;background:#E8ECF8;color:var(--text-hint);padding:2px 7px;border-radius:20px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.payment-total{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;background:#F4F6FF;font-size:14px;border-top:1.5px solid var(--border)}
+.t-label{font-weight:600;color:var(--primary)}
+.t-sub{font-size:11.5px;color:var(--text-hint);margin-left:6px;font-weight:400}
+.t-amount{font-weight:700;font-size:16px;color:var(--accent)}
+.payment-vat{display:flex;justify-content:flex-end;gap:16px;padding:8px 16px;background:#F4F6FF;font-size:12px;color:var(--text-hint);border-top:1px solid #EAECF8}
+
+/* TYPE SELECTOR */
+.type-selector{display:flex;flex-direction:column;gap:10px}
+.type-option{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--border);border-radius:4px;padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s}
+.type-option:hover{border-color:var(--accent);background:rgba(48,140,247,0.04)}
+.type-option.selected{border-color:var(--accent);background:rgba(48,140,247,0.07)}
+.type-option input[type="radio"]{display:none}
+.radio-dot{width:18px;height:18px;border:1.5px solid var(--border);border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:border-color .15s;background:#fff}
+.type-option.selected .radio-dot{border-color:var(--accent)}
+.type-option.selected .radio-dot::after{content:'';width:9px;height:9px;background:var(--accent);border-radius:50%}
+.type-label{font-size:14px;font-weight:500;color:var(--text-main);margin-bottom:2px}
+.type-desc{font-size:12px;color:var(--text-sub);line-height:1.5}
+
+/* FILE UPLOAD */
+.file-upload-area{border:1.5px dashed var(--border);border-radius:var(--ir);padding:20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;background:#FAFBFE}
+.file-upload-area:hover{border-color:var(--accent);background:var(--accent-light)}
+.file-upload-area input{display:none}
+.file-icon{font-size:22px;margin-bottom:6px}
+.file-upload-text{font-size:13px;color:var(--text-sub)}
+.file-upload-text strong{color:var(--accent);font-weight:500}
+.file-upload-sub{font-size:11.5px;color:var(--text-hint);margin-top:3px}
+.file-selected{display:none;align-items:center;gap:10px;background:var(--accent-light);border:1px solid #C5D0F8;border-radius:var(--ir);padding:10px 14px;font-size:13px}
+.file-selected .file-name{color:var(--text-main);font-weight:500;flex:1}
+.file-remove{color:var(--text-hint);cursor:pointer;font-size:16px;padding:2px 4px}
+.file-remove:hover{color:var(--red)}
+
+/* AGREE & SUBMIT */
+.form-section{display:none}
+.form-section.active{display:block}
+.agree-area{background:#F8F9FE;border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-top:4px}
+.agree-scroll{font-size:12px;color:var(--text-sub);line-height:1.7;max-height:110px;overflow-y:auto;margin-bottom:14px;padding-right:4px}
+.agree-scroll::-webkit-scrollbar{width:4px}
+.agree-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.agree-check{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--text-main)}
+.checkbox{width:18px;height:18px;border:1.5px solid rgba(0,0,0,0.2);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,border-color .15s;background:#fff}
+.checkbox.checked{background:#000;border-color:#000}
+.checkbox.checked::after{content:'';width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px);display:block}
+.submit-btn{width:100%;background:var(--primary);color:#fff;border:none;border-radius:4px;padding:14px;font-size:14px;font-weight:700;font-family:'Pretendard',-apple-system,sans-serif;cursor:pointer;transition:background .18s,transform .1s;margin-top:16px;line-height:20px}
+.submit-btn:hover{background:var(--primary-hover)}
+.submit-btn:active{transform:scale(.99)}
+.submit-btn:disabled{background:#C5CBD8;cursor:not-allowed;transform:none}
+
+/* SUCCESS */
+.success-card{display:none;background:var(--white);border-radius:var(--radius);padding:56px 40px;box-shadow:var(--shadow);text-align:center;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.success-icon{width:64px;height:64px;background:#ECFDF5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
+.success-title{font-size:20px;font-weight:700;margin-bottom:10px}
+.success-desc{font-size:13.5px;color:var(--text-sub);line-height:1.7;margin-bottom:28px}
+.success-info{background:#F8F9FE;border-radius:10px;padding:16px 20px;text-align:left;margin-bottom:28px}
+.success-row{display:flex;font-size:13px;padding:5px 0;gap:12px}
+.s-label{color:var(--text-hint);width:80px;flex-shrink:0}
+.s-val{color:var(--text-main);font-weight:500}
+.back-btn{background:rgba(48,140,247,0.07);color:var(--accent);border:none;border-radius:4px;padding:14px 32px;font-size:14px;font-weight:700;font-family:'Pretendard',-apple-system,sans-serif;cursor:pointer}
+.back-btn:hover{background:#dde5ff}
+
+/* ═══════════════════════════
+   우측 기획 정의 사이드바
+   ═══════════════════════════ */
+.spec-panel{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.spec-panel-header{padding:14px 20px;background:#000;color:#fff;font-size:12px;font-weight:700;letter-spacing:.3px;display:flex;align-items:center;gap:7px;font-family:'Pretendard',-apple-system,sans-serif}
+.spec-section{padding:16px 20px;border-bottom:1px solid #F0F2F8}
+.spec-section:last-child{border-bottom:none}
+.spec-section-title{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.spec-section-title .snum{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:var(--accent);color:#fff;font-size:9px;font-weight:700;border-radius:50%}
+.spec-body{font-size:11.5px;color:var(--spec-text);line-height:1.75}
+.spec-body ul{margin-left:13px;margin-top:3px}
+.spec-body li{margin-bottom:2px}
+.spec-body code{background:#EEF1FF;border-radius:3px;padding:1px 4px;font-size:10.5px;font-family:'Courier New',monospace;color:var(--accent)}
+.spec-body strong{font-weight:600;color:var(--text-main)}
+.spec-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;margin-right:3px;margin-bottom:2px}
+.spec-tag.green{background:#D1FAE5;color:#065F46}
+.spec-tag.yellow{background:#FEF3C7;color:#92400E}
+.spec-tag.blue{background:#DBEAFE;color:#1E40AF}
+.spec-body .fnum{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:16px;padding:0 4px;background:#E8ECF8;color:var(--accent);font-size:9.5px;font-weight:700;border-radius:3px;margin-right:3px}
+
+/* 활성 섹션 하이라이트 */
+.spec-section.highlight{background:#FAFBFF;border-left:3px solid var(--accent);padding-left:17px}
+
+/* FOOTER — OCREO 디자인 가이드 */
+footer{background:#000000;padding:50px 76px;margin-top:40px}
+.footer-inner{max-width:1920px;margin:0 auto;display:flex;align-items:flex-start;gap:26px}
+.footer-logo-wrap{width:80px;height:17px;flex-shrink:0;margin-right:10px}
+.footer-logo-svg{width:80px;height:auto}
+.footer-text-col{display:flex;flex-direction:column;gap:10px;flex:1}
+.footer-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.footer-info{font-size:14px;font-weight:400;color:#999999;line-height:normal;font-family:'Pretendard',-apple-system,sans-serif}
+.footer-divider{width:1px;height:10px;background:#999999;flex-shrink:0}
+.footer-sub{font-size:14px;color:#999999;font-family:'Pretendard',-apple-system,sans-serif;margin-top:4px}
+.footer-lang{height:34px;display:flex;align-items:center;padding:0 10px 0 6px;border-radius:4px;border:1px solid #999;cursor:pointer;flex-shrink:0}
+.footer-lang-icon{width:16px;height:16px;margin-right:6px}
+.footer-lang-text{font-size:13px;color:#fff;line-height:18px;font-family:'Pretendard',-apple-system,sans-serif}
+
+@media(max-width:900px){
+  .page{grid-template-columns:1fr;padding:24px 16px 60px}
+  .spec-col{position:static}
+  nav{padding:0 16px!important}
+  .nav-links{display:none}
+  .form-card{padding:24px 20px}
+  .grid-2{grid-template-columns:1fr}
+  .footer-inner{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo-link">
+      <svg width="80" height="18" viewBox="0 0 80 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M71.307 17.3913C69.6466 17.3913 68.1749 17.0441 66.8919 16.3498C65.624 15.6404 64.6277 14.6743 63.9032 13.4517C63.1787 12.2139 62.8164 10.8026 62.8164 9.21771C62.8164 7.61771 63.1787 6.20639 63.9032 4.98375C64.6277 3.74601 65.624 2.77997 66.8919 2.08564C68.1598 1.3762 69.6164 1.02148 71.2617 1.02148C72.9221 1.02148 74.3862 1.3762 75.6541 2.08564C76.9221 2.77997 77.9183 3.74601 78.6428 4.98375C79.3674 6.20639 79.7296 7.61771 79.7296 9.21771C79.7296 10.8026 79.3674 12.2139 78.6428 13.4517C77.9334 14.6743 76.9447 15.6404 75.6768 16.3498C74.4089 17.0441 72.9523 17.3913 71.307 17.3913ZM71.307 13.5422C72.1221 13.5422 72.839 13.3611 73.4579 12.9988C74.0768 12.6215 74.5598 12.1083 74.907 11.4592C75.2541 10.8102 75.4277 10.063 75.4277 9.21771C75.4277 8.37243 75.2466 7.62526 74.8843 6.9762C74.5372 6.31205 74.0466 5.79884 73.4126 5.43658C72.7938 5.05922 72.0768 4.87054 71.2617 4.87054C70.4617 4.87054 69.7447 5.05922 69.1107 5.43658C68.4919 5.79884 68.0013 6.31205 67.639 6.9762C67.2919 7.62526 67.1183 8.37243 67.1183 9.21771C67.1183 10.063 67.2994 10.8102 67.6617 11.4592C68.024 12.1083 68.5145 12.6215 69.1334 12.9988C69.7674 13.3611 70.4919 13.5422 71.307 13.5422Z" fill="black"/><path d="M50.3418 1.27148V17.1205H61.1192V13.2715H54.5305V11.0526V7.31677V5.12054H60.9607V1.27148H50.3418Z" fill="black"/><path d="M35.3301 17.1205V1.27148H41.8961C43.0886 1.27148 44.1452 1.50545 45.0659 1.97337C45.9867 2.4262 46.7037 3.06016 47.2169 3.87526C47.7452 4.67526 48.0093 5.60356 48.0093 6.66016C48.0093 7.71677 47.7452 8.66016 47.2169 9.49035C46.7037 10.3054 45.9867 10.947 45.0659 11.4149C44.1452 11.8677 43.0886 12.0941 41.8961 12.0941H39.5188V17.1205H35.3301ZM43.8433 17.1205L40.3112 10.8941L43.4584 8.53941L48.6433 17.1205H43.8433ZM39.5188 8.24507H41.6697C42.0471 8.24507 42.3791 8.17715 42.6659 8.0413C42.9527 7.90545 43.1791 7.71677 43.3452 7.47526C43.5112 7.23375 43.5942 6.96205 43.5942 6.66016C43.5942 6.20733 43.4131 5.83752 43.0508 5.55073C42.7037 5.24884 42.2433 5.0979 41.6697 5.0979H39.5188V8.24507Z" fill="black"/><path d="M26.1486 17.3925C24.5637 17.3925 23.16 17.0453 21.9373 16.3509C20.7298 15.6415 19.7788 14.6755 19.0845 13.4528C18.3901 12.2151 18.043 10.7962 18.043 9.19623C18.043 7.59623 18.3901 6.18491 19.0845 4.96226C19.7788 3.72453 20.7298 2.75849 21.9373 2.06415C23.16 1.35472 24.5637 1 26.1486 1C27.3713 1 28.4732 1.21132 29.4543 1.63396C30.4354 2.0566 31.2807 2.64528 31.9901 3.4C32.6996 4.15472 33.243 5.03019 33.6203 6.02641L29.6354 7.29434C29.4241 6.79623 29.1524 6.36604 28.8203 6.00377C28.4883 5.62641 28.0958 5.33962 27.643 5.1434C27.2052 4.94717 26.7071 4.84906 26.1486 4.84906C25.409 4.84906 24.7524 5.03774 24.1788 5.41509C23.6052 5.77736 23.1524 6.28302 22.8203 6.93208C22.5033 7.58113 22.3449 8.33585 22.3449 9.19623C22.3449 10.0415 22.5109 10.7962 22.843 11.4604C23.175 12.1094 23.6279 12.6226 24.2015 13C24.7901 13.3623 25.4618 13.5434 26.2166 13.5434C26.8052 13.5434 27.3109 13.4453 27.7335 13.2491C28.1713 13.0377 28.5411 12.7509 28.843 12.3887C29.16 12.0113 29.4317 11.5736 29.6581 11.0755L33.643 12.3434C33.2807 13.3396 32.7449 14.2226 32.0354 14.9925C31.326 15.7472 30.4732 16.3358 29.4769 16.7585C28.4807 17.1811 27.3713 17.3925 26.1486 17.3925Z" fill="black"/><path d="M8.49057 17.3913C6.83019 17.3913 5.35849 17.0441 4.07547 16.3498C2.80755 15.6404 1.81132 14.6743 1.08679 13.4517C0.362264 12.2139 0 10.8026 0 9.21771C0 7.61771 0.362264 6.20639 1.08679 4.98375C1.81132 3.74601 2.80755 2.77997 4.07547 2.08564C5.3434 1.3762 6.8 1.02148 8.44528 1.02148C10.1057 1.02148 11.5698 1.3762 12.8377 2.08564C14.1057 2.77997 15.1019 3.74601 15.8264 4.98375C16.5509 6.20639 16.9132 7.61771 16.9132 9.21771C16.9132 10.8026 16.5509 12.2139 15.8264 13.4517C15.117 14.6743 14.1283 15.6404 12.8604 16.3498C11.5925 17.0441 10.1358 17.3913 8.49057 17.3913ZM8.49057 13.5422C9.30566 13.5422 10.0226 13.3611 10.6415 12.9988C11.2604 12.6215 11.7434 12.1083 12.0906 11.4592C12.4377 10.8102 12.6113 10.063 12.6113 9.21771C12.6113 8.37243 12.4302 7.62526 12.0679 6.9762C11.7208 6.31205 11.2302 5.79884 10.5962 5.43658C9.97736 5.05922 9.26038 4.87054 8.44528 4.87054C7.64528 4.87054 6.9283 5.05922 6.29434 5.43658C5.67547 5.79884 5.18491 6.31205 4.82264 6.9762C4.47547 7.62526 4.30189 8.37243 4.30189 9.21771C4.30189 10.063 4.48302 10.8102 4.84528 11.4592C5.20755 12.1083 5.69811 12.6215 6.31698 12.9988C6.95094 13.3611 7.67547 13.5422 8.49057 13.5422Z" fill="black"/><path d="M55.5736 7.63281H60.754V10.6517H54.9336L55.5736 7.63281Z" fill="black"/></svg>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">페어 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 3.5L6 8L10.5 3.5" stroke="#999999" stroke-width="1.5"/></svg></a></li>
+      <li><a href="#">참가 신청 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 3.5L6 8L10.5 3.5" stroke="#999999" stroke-width="1.5"/></svg></a></li>
+      <li><a href="#">페어스토리</a></li>
+      <li><a href="#">포트폴리오</a></li>
+      <li><a href="#">공지사항</a></li>
+      <li><a href="#">바이어 등록</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="avatar"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' fill='%23E0E0E0'/%3E%3C/svg%3E" alt="profile"></div>
+      <button class="globe-btn" aria-label="언어 선택"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.5882 11.9997C22.5897 14.0798 21.9777 16.1142 20.8285 17.8485C19.6794 19.5829 18.0442 20.9403 16.1273 21.7512C14.2104 22.562 12.0968 22.7902 10.0508 22.4073C8.00485 22.0244 6.1172 21.0473 4.62384 19.5982C3.13048 18.1492 2.09767 16.2924 1.6545 14.26C1.21133 12.2277 1.37747 10.1098 2.13215 8.17127C2.88684 6.23273 4.19658 4.55947 5.89766 3.36066C7.59874 2.16185 9.61569 1.49067 11.6964 1.43103C11.8966 1.40515 12.0993 1.40515 12.2996 1.43103C15.0536 1.50757 17.6692 2.65437 19.5905 4.62767C21.5118 6.60097 22.5872 9.24654 22.5882 11.9997ZM8.45585 20.3766C8.68232 20.4719 8.91191 20.5579 9.14462 20.6345C7.75747 18.2288 7.03212 15.4992 7.04222 12.7227H2.92301C3.0574 14.3819 3.64418 15.9726 4.61961 17.3219C5.59504 18.6713 6.92182 19.7278 8.45585 20.3766ZM3.6091 8.46078C3.23391 9.3458 3.00318 10.2852 2.92569 11.2433H7.04222C7.03386 8.48354 7.74854 5.7697 9.1152 3.37156C8.89319 3.44551 8.67341 3.52837 8.45585 3.62014C6.2732 4.54453 4.53535 6.28019 3.6091 8.46078ZM15.4719 11.2433C15.4389 10.2065 15.3222 9.17406 15.1228 8.15606C14.9278 7.11458 14.6076 6.10044 14.1692 5.13568C13.5714 3.86338 12.8198 3.03344 12.1672 2.90781C12.0544 2.90613 11.9416 2.90613 11.8288 2.90781C11.1761 3.03344 10.4245 3.86338 9.82669 5.13702C9.38878 6.10184 9.06905 7.11597 8.87446 8.1574C8.67513 9.17495 8.5584 10.2069 8.5254 11.2433H15.4719ZM14.1692 18.829C14.6077 17.8642 14.9278 16.8501 15.1228 15.8086C15.3216 14.791 15.4379 13.759 15.4705 12.7227H8.52674C8.55971 13.7595 8.67645 14.7919 8.8758 15.8099C9.07046 16.8509 9.39018 17.8646 9.82803 18.829C10.4793 20.2136 11.3112 21.0742 12 21.0742C12.6887 21.0742 13.5206 20.2136 14.1706 18.829H14.1692ZM20.3909 15.5386C20.7702 14.6432 21.0019 13.6922 21.0769 12.7227H16.9551C16.9658 15.5001 16.2404 18.2308 14.8527 20.6372C15.0854 20.5606 15.3159 20.4742 15.5441 20.3779C17.7265 19.4539 19.4643 17.7187 20.3909 15.5386ZM15.5441 3.62014C15.3263 3.52828 15.105 3.44491 14.8807 3.37022C16.2475 5.76832 16.9622 8.48219 16.9537 11.2419H21.0743C20.9346 9.58865 20.3457 8.00489 19.3711 6.66165C18.3965 5.31842 17.0732 4.26673 15.5441 3.62014Z" fill="black" stroke="black" stroke-width="0.2"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+<!-- 2-COLUMN PAGE -->
+<div class="page">
+
+  <!-- ══════════ 좌측: 폼 영역 ══════════ -->
+  <div class="form-col">
+  <div id="formArea">
+
+    <!-- HERO -->
+    <div class="hero-card">
+      <h1>증빙 발행 신청</h1>
+      <p>참가비 증빙 발행을 위한 신청 양식입니다.<br>정확한 정보를 입력해 주시기 바랍니다.</p>
+      <div class="notice-box">
+        <strong>기간 내 미신청 시</strong> 참가 신청 시 등록하신 휴대전화 번호로 현금영수증이 일괄 발행됩니다.<br>
+        · 세금계산서 발행일자: <strong>2026/07/30</strong> &nbsp;|&nbsp; 신청 마감: <strong>2026/08/13</strong><br>
+        · 현금영수증 마감: <strong>2026/08/07</strong>까지
+      </div>
+    </div>
+
+    <!-- SECTION 0 — 페어 선택 -->
+    <div class="form-card" data-sec="0">
+      <div class="section-title"><span class="section-num">0</span>증빙 발행 신청 대상 페어</div>
+      <div class="field" style="margin-bottom:0">
+        <label><span class="field-num">0-1</span> 페어 선택 <span class="req">*</span></label>
+        <select id="fairSelect" onchange="onFairChange()">
+          <option value="sifv21" selected>서울일러스트레이션페어 V.21 (2026.07.30~08.02)</option>
+          <option value="bifv7">부산일러스트레이션페어 V.7 (2026.03.13~15)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- SECTION 1 — 참가자 정보 -->
+    <div class="form-card" data-sec="1">
+      <div class="section-title"><span class="section-num">1</span>참가자 정보 확인</div>
+      <div class="grid-2">
+        <div class="field">
+          <label><span class="field-num">1-1</span> 성함 (본명)</label>
+          <div class="readonly-field">김예진 <span class="readonly-badge">자동 입력</span></div>
+        </div>
+        <div class="field">
+          <label><span class="field-num">1-2</span> 참가자명 (작가명)</label>
+          <div class="readonly-field">YJ Studio <span class="readonly-badge">자동 입력</span></div>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label><span class="field-num">1-3</span> 휴대폰 번호</label>
+        <div class="readonly-field">010-1234-5678 <span class="readonly-badge">자동 입력</span></div>
+      </div>
+
+    </div>
+
+    <!-- SECTION 2 — 납입 금액 확인 -->
+    <div class="form-card" data-sec="2">
+      <div class="section-title"><span class="section-num">2</span>납입 금액 확인</div>
+      <p style="font-size:12.5px;color:var(--text-sub);margin-bottom:14px;line-height:1.6">
+        아래 납입 내역의 합산 금액 기준으로 증빙이 발행됩니다.
+      </p>
+
+      <!-- V.21 납입 내역 -->
+      <div id="payment-sifv21">
+        <div class="payment-list">
+          <div class="payment-item">
+            <span class="p-label">계약금 1차</span>
+            <span class="p-date">2025.10.13 입금 · 계좌이체</span>
+            <span class="p-amount">₩396,000</span>
+          </div>
+          <div class="payment-item">
+            <span class="p-label">계약금 2차</span>
+            <span class="p-date">2026.04.06 입금 · 계좌이체</span>
+            <span class="p-amount">₩396,000</span>
+          </div>
+          <div class="payment-item" style="background:#F7F7F7">
+            <span class="p-label" style="color:var(--text-hint)">잔금</span>
+            <span class="p-date">미납</span>
+            <span class="p-amount" style="color:var(--text-hint)">₩0</span>
+          </div>
+        </div>
+        <div class="payment-total"><span class="t-label">합계 <span class="t-sub">(VAT 포함)</span></span><span class="t-amount">₩792,000</span></div>
+      </div>
+
+      <!-- V.7 납입 내역 (기업 2차 신청 예시) -->
+      <div id="payment-bifv7" style="display:none">
+        <div class="payment-list">
+          <div class="payment-item issued"><span class="p-label">계약금</span><span class="p-date">2025.09.10 입금</span><span class="p-amount">₩1,573,000</span><span class="issued-badge">발행 완료</span></div>
+          <div class="payment-item"><span class="p-label">잔금</span><span class="p-date">2026.01.14 입금</span><span class="p-amount">₩1,573,000</span></div>
+          <div class="payment-item"><span class="p-label">부대시설</span><span class="p-date">2026.01.20 입금</span><span class="p-amount">₩110,000</span></div>
+        </div>
+        <div class="payment-total"><span class="t-label">합계 <span class="t-sub">(VAT 포함 · 발행 완료 건 제외)</span></span><span class="t-amount">₩1,683,000</span></div>
+      </div>
+    </div>
+
+    <!-- SECTION 3 — 증빙 유형 선택 -->
+    <div class="form-card" data-sec="3">
+      <div class="section-title"><span class="section-num">3</span>증빙 발행 방법</div>
+      <div class="type-selector">
+        <div class="type-option" onclick="selectType('cash_personal')" id="opt-cash_personal">
+          <div class="radio-dot"></div>
+          <div><div class="type-label">현금영수증 (개인소득공제)</div><div class="type-desc">개인 소득공제용. 휴대폰 번호로 발행됩니다.</div></div>
+        </div>
+        <div class="type-option" onclick="selectType('cash_biz')" id="opt-cash_biz">
+          <div class="radio-dot"></div>
+          <div><div class="type-label">현금영수증 (지출증빙)</div><div class="type-desc">사업자지출증빙용. 사업자 등록번호로 발행됩니다.</div></div>
+        </div>
+        <div class="type-option" onclick="selectType('tax')" id="opt-tax">
+          <div class="radio-dot"></div>
+          <div><div class="type-label">세금계산서</div><div class="type-desc">사업자 등록증이 있는 경우 선택. 전자 세금계산서로 발행됩니다.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4-A — 현금영수증(개인소득공제) -->
+    <div class="form-card form-section" id="section-cash_personal" data-sec="4">
+      <div class="section-title"><span class="section-num">4</span>현금영수증 발행 정보 (개인소득공제)</div>
+      <p style="font-size:12.5px;color:var(--text-sub);margin-bottom:20px;line-height:1.6">발행 이후에는 번호 수정이 불가합니다. 정확하게 입력해 주세요.</p>
+      <div class="field" style="margin-bottom:0">
+        <label><span class="field-num">4-1</span> 현금영수증 발행 번호 (휴대폰) <span class="req">*</span></label>
+        <input type="text" id="receiptPhone" value="010-1234-5678" maxlength="13" placeholder="예: 010-0000-0000">
+        <p style="font-size:11.5px;color:var(--text-hint);margin-top:6px">회원가입 시 등록한 번호가 자동으로 입력됩니다. 다른 번호로 발행이 필요한 경우 수정하세요.</p>
+      </div>
+    </div>
+
+    <!-- SECTION 4-B — 현금영수증(지출증빙) -->
+    <div class="form-card form-section" id="section-cash_biz" data-sec="4">
+      <div class="section-title"><span class="section-num">4</span>현금영수증 발행 정보 (지출증빙)</div>
+      <p style="font-size:12.5px;color:var(--text-sub);margin-bottom:20px;line-height:1.6">참가자 본인의 정보로만 발행이 가능합니다. 발행 이후에는 수정이 불가합니다.</p>
+      <div class="field">
+        <label><span class="field-num">4-1</span> 현금영수증 발행 번호 (사업자 등록번호) <span class="req">*</span></label>
+        <input type="text" placeholder="예: 123-45-67890" maxlength="12" id="bizNum2">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label><span class="field-num">4-2</span> 사업자등록증 사본 <span class="req">*</span></label>
+        <div class="file-upload-area" onclick="document.getElementById('file-biz').click()">
+          <input type="file" id="file-biz" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this,'file-selected-biz','file-name-biz')">
+          <div class="file-icon">📎</div><div class="file-upload-text"><strong>클릭하여 파일 첨부</strong></div>
+          <div class="file-upload-sub">PDF, JPG, PNG · 최대 10MB</div>
+        </div>
+        <div class="file-selected" id="file-selected-biz"><span>📄</span><span class="file-name" id="file-name-biz"></span><span class="file-remove" onclick="removeFile('file-biz','file-selected-biz')">✕</span></div>
+      </div>
+    </div>
+
+    <!-- SECTION 4-C — 세금계산서 -->
+    <div class="form-card form-section" id="section-tax" data-sec="4">
+      <div class="section-title"><span class="section-num">4</span>세금계산서 발행 정보</div>
+      <p style="font-size:12.5px;color:var(--text-sub);margin-bottom:20px;line-height:1.6">입금을 진행한 참가자 본인의 사업자 등록번호로만 발행 가능합니다.</p>
+      <div class="field">
+        <label><span class="field-num">4-1</span> 희망 발행 일자 <span class="req">*</span></label>
+        <input type="date" id="issuanceDate" value="2026-07-30">
+      </div>
+      <div class="grid-2">
+        <div class="field"><label><span class="field-num">4-2</span> 상호 <span class="req">*</span></label><input type="text" placeholder="사업자 상호명"></div>
+        <div class="field"><label><span class="field-num">4-3</span> 대표자명 <span class="req">*</span></label><input type="text" placeholder="대표자 성명"></div>
+      </div>
+      <div class="field">
+        <label><span class="field-num">4-4</span> 사업자 등록번호 <span class="req">*</span></label>
+        <input type="text" placeholder="예: 123-45-67890" maxlength="12" id="bizNum1">
+      </div>
+      <div class="grid-2">
+        <div class="field"><label><span class="field-num">4-5</span> 업태 <span class="req">*</span></label><input type="text" placeholder="예: 서비스업"></div>
+        <div class="field"><label><span class="field-num">4-6</span> 업종 <span class="req">*</span></label><input type="text" placeholder="예: 예술창작업"></div>
+      </div>
+      <div class="field"><label><span class="field-num">4-7</span> 사업장 소재지 <span class="req">*</span></label><input type="text" placeholder="도로명 주소 입력"></div>
+      <div class="field">
+        <label><span class="field-num">4-8</span> 전자 세금계산서 발행 이메일 <span class="req">*</span></label>
+        <input type="email" placeholder="세금계산서 수신 이메일 주소">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label><span class="field-num">4-9</span> 사업자등록증 사본 <span class="req">*</span></label>
+        <div class="file-upload-area" onclick="document.getElementById('file-tax').click()">
+          <input type="file" id="file-tax" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this,'file-selected-tax','file-name-tax')">
+          <div class="file-icon">📎</div><div class="file-upload-text"><strong>클릭하여 파일 첨부</strong></div>
+          <div class="file-upload-sub">PDF, JPG, PNG · 최대 10MB</div>
+        </div>
+        <div class="file-selected" id="file-selected-tax"><span>📄</span><span class="file-name" id="file-name-tax"></span><span class="file-remove" onclick="removeFile('file-tax','file-selected-tax')">✕</span></div>
+      </div>
+    </div>
+
+    <!-- SECTION 5 — 동의 & 제출 -->
+    <div class="form-card" id="agreeCard" style="display:none" data-sec="5">
+      <div class="section-title"><span class="section-num">5</span>개인정보 활용 동의</div>
+      <div class="agree-area">
+        <div class="agree-scroll">
+          '서울일러스트레이션페어 사무국'(이하 '사무국')은 고객님의 개인정보를 중요시하며, 「정보통신망 이용촉진 및 정보보호」에 관한 법률을 준수하고 있습니다.<br><br>
+          <strong>■ 수집 및 이용 목적</strong><br>전시회 참가와 관련된 본인 확인 및 참가비용 증빙 처리를 위함<br><br>
+          <strong>■ 수집 항목</strong><br>성함, 휴대전화번호, 이메일, 사업자번호, 사업자등록증 사본 등<br><br>
+          <strong>■ 보유 및 이용 기간</strong><br>수집 및 이용목적 달성 후 지체 없이 파기. 단, 관계법령에 의해 보존이 필요한 경우 2년간 보관합니다.<br><br>
+          ※ 동의한 내용 외 다른 목적으로 활용하지 않으며, 이용을 거부하고자 할 때에는 개인정보 관리책임자를 통해 열람·정정·삭제를 요구할 수 있습니다.
+        </div>
+        <label class="agree-check" onclick="toggleAgree()"><div class="checkbox" id="agreeCheckbox"></div>신청자 본인은 증빙 발행 정보 수집·이용에 동의합니다.</label>
+      </div>
+      <button class="submit-btn" id="submitBtn" disabled onclick="submitForm()">증빙 발행 신청하기</button>
+    </div>
+
+  </div><!-- /formArea -->
+
+  <!-- 완료 화면 -->
+  <div class="success-card" id="successCard">
+    <div class="success-icon">✅</div>
+    <div class="success-title">신청이 완료되었습니다</div>
+    <div class="success-desc">증빙 발행 신청이 접수되었습니다.<br>사무국에서 처리 후 결과를 안내해 드립니다.</div>
+    <div class="success-info">
+      <div class="success-row"><span class="s-label">페어</span><span class="s-val" id="s-fair"></span></div>
+      <div class="success-row"><span class="s-label">신청일시</span><span class="s-val" id="s-date"></span></div>
+      <div class="success-row"><span class="s-label">증빙 유형</span><span class="s-val" id="s-type"></span></div>
+      <div class="success-row"><span class="s-label">발행 금액</span><span class="s-val" id="s-amount"></span></div>
+      <div class="success-row"><span class="s-label">처리 상태</span><span class="s-val" style="color:var(--accent)">신청 완료 · 처리 대기중</span></div>
+    </div>
+    <button class="back-btn" onclick="location.reload()">마이페이지로 돌아가기</button>
+  </div>
+
+  </div><!-- /form-col -->
+
+  <!-- ══════════ 우측: 기획 정의 사이드바 ══════════ -->
+  <div class="spec-col">
+    <div class="spec-panel">
+      <div class="spec-panel-header">📋 기획 정의</div>
+
+      <!-- SEC 0 -->
+      <div class="spec-section" id="spec-0">
+        <div class="spec-section-title"><span class="snum">0</span> 페어 선택</div>
+        <div class="spec-body">
+          드롭다운 노출 조건 (AND):
+          <ul>
+            <li>어드민에서 설정한 증빙 신청 가능 기간이 현재 날짜 이내 <span style="color:var(--spec-label)">(신규 필드 필요)</span></li>
+            <li><code>UserDto.fairs</code> 목록 중 해당 페어 참가 이력(<code>FairApplicationByUserDto</code>) 존재</li>
+          </ul>
+          기본 선택: 신청 기간 활성 페어 중 <strong>가장 최근 회차</strong> 자동 선택.<br>
+          페어 변경 시 SECTION 2 납입 내역 갱신.
+        </div>
+      </div>
+
+      <!-- SEC 1 -->
+      <div class="spec-section" id="spec-1">
+        <div class="spec-section-title"><span class="snum">1</span> 참가자 정보</div>
+        <div class="spec-body">
+          모든 필드 <code>readonly</code>. 수정 시 사무국 문의.
+          <ul>
+            <li><span class="fnum">1-1</span> <code>UserDto.name</code></li>
+            <li><span class="fnum">1-2</span> 1인작가 → <code>PersonalParticipantDto.signboardNameKor</code><br>기업 → <code>BusinessParticipantDto.companyNameKor</code></li>
+            <li><span class="fnum">1-3</span> <code>UserDto.cellPhone</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SEC 2 -->
+      <div class="spec-section" id="spec-2">
+        <div class="spec-section-title"><span class="snum">2</span> 납입 금액 확인</div>
+        <div class="spec-body">
+          선택 페어 기준 <code>PaymentTransactionDto</code> 목록 조회.<br>
+          <code>PaymentMethod.Card</code> 건 제외, 계좌이체(<code>BankAccount</code>) 건만 표시.<br>
+          각 항목 금액(<code>PaymentTransactionDto.amount</code>)은 VAT 포함. 합산이 발행 금액.<br>
+          <strong>기업 2차 신청:</strong> 기발행 처리된 건 구분은 신규 상태값 필요 <span style="color:var(--spec-label)">(신규 필드 필요)</span><br>
+          <strong>V.21 예시:</strong> 계약금 분납 2회 기준<br>
+          <span class="spec-tag green">1차 ₩396,000</span>
+          <span class="spec-tag green">2차 ₩396,000</span>
+          <span class="spec-tag yellow">합계 ₩792,000</span>
+        </div>
+      </div>
+
+      <!-- SEC 3 -->
+      <div class="spec-section" id="spec-3">
+        <div class="spec-section-title"><span class="snum">3</span> 증빙 유형</div>
+        <div class="spec-body">
+          증빙 유형 선택값 및 저장 구조는 <strong>신규 타입 설계 필요</strong> <span style="color:var(--spec-label)">(스키마 미존재)</span><br>
+          유형 선택 시 SECTION 4 동적 전환.<br>
+          신청 건수 제한 없음 (기업 다건 발행 대응).
+        </div>
+      </div>
+
+      <!-- SEC 4 -->
+      <div class="spec-section" id="spec-4">
+        <div class="spec-section-title"><span class="snum">4</span> 발행 정보 입력</div>
+        <div class="spec-body">
+          입력값 저장 구조 전체 <strong>신규 설계 필요</strong> <span style="color:var(--spec-label)">(스키마 미존재)</span><br>
+          <strong>스키마 활용 가능 필드</strong>
+          <ul>
+            <li><span class="fnum">현금영수증 개인 4-1</span> <code>UserDto.cellPhone</code> pre-fill, 수정 가능. 타인 번호 허용.</li>
+            <li><span class="fnum">세금계산서 4-8</span> <code>UserDto.email</code> pre-fill 권장, 수정 가능.</li>
+          </ul>
+          <strong>신규 설계 필요 항목</strong>
+          <ul>
+            <li>증빙 유형별 입력값 저장 구조</li>
+            <li>희망 발행일자 (세금계산서)</li>
+            <li>사업자등록증 파일 업로드 URL</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SEC 5 -->
+      <div class="spec-section" id="spec-5">
+        <div class="spec-section-title"><span class="snum">5</span> 동의 & 제출</div>
+        <div class="spec-body">
+          동의 전 버튼 <code>disabled</code>.<br>
+          제출 mutation <strong>신규 개발 필요</strong> <span style="color:var(--spec-label)">(스키마 미존재)</span><br>
+          성공 → 완료 화면 표시.<br>
+          오류 → 에러 토스트.
+        </div>
+      </div>
+
+    </div><!-- /spec-panel -->
+  </div><!-- /spec-col -->
+
+</div><!-- /page -->
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo-wrap">
+      <svg width="80" height="18" viewBox="0 0 80 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M71.307 17.3913C69.6466 17.3913 68.1749 17.0441 66.8919 16.3498C65.624 15.6404 64.6277 14.6743 63.9032 13.4517C63.1787 12.2139 62.8164 10.8026 62.8164 9.21771C62.8164 7.61771 63.1787 6.20639 63.9032 4.98375C64.6277 3.74601 65.624 2.77997 66.8919 2.08564C68.1598 1.3762 69.6164 1.02148 71.2617 1.02148C72.9221 1.02148 74.3862 1.3762 75.6541 2.08564C76.9221 2.77997 77.9183 3.74601 78.6428 4.98375C79.3674 6.20639 79.7296 7.61771 79.7296 9.21771C79.7296 10.8026 79.3674 12.2139 78.6428 13.4517C77.9334 14.6743 76.9447 15.6404 75.6768 16.3498C74.4089 17.0441 72.9523 17.3913 71.307 17.3913ZM71.307 13.5422C72.1221 13.5422 72.839 13.3611 73.4579 12.9988C74.0768 12.6215 74.5598 12.1083 74.907 11.4592C75.2541 10.8102 75.4277 10.063 75.4277 9.21771C75.4277 8.37243 75.2466 7.62526 74.8843 6.9762C74.5372 6.31205 74.0466 5.79884 73.4126 5.43658C72.7938 5.05922 72.0768 4.87054 71.2617 4.87054C70.4617 4.87054 69.7447 5.05922 69.1107 5.43658C68.4919 5.79884 68.0013 6.31205 67.639 6.9762C67.2919 7.62526 67.1183 8.37243 67.1183 9.21771C67.1183 10.063 67.2994 10.8102 67.6617 11.4592C68.024 12.1083 68.5145 12.6215 69.1334 12.9988C69.7674 13.3611 70.4919 13.5422 71.307 13.5422Z" fill="white"/><path d="M50.3418 1.27148V17.1205H61.1192V13.2715H54.5305V11.0526V7.31677V5.12054H60.9607V1.27148H50.3418Z" fill="white"/><path d="M35.3301 17.1205V1.27148H41.8961C43.0886 1.27148 44.1452 1.50545 45.0659 1.97337C45.9867 2.4262 46.7037 3.06016 47.2169 3.87526C47.7452 4.67526 48.0093 5.60356 48.0093 6.66016C48.0093 7.71677 47.7452 8.66016 47.2169 9.49035C46.7037 10.3054 45.9867 10.947 45.0659 11.4149C44.1452 11.8677 43.0886 12.0941 41.8961 12.0941H39.5188V17.1205H35.3301ZM43.8433 17.1205L40.3112 10.8941L43.4584 8.53941L48.6433 17.1205H43.8433ZM39.5188 8.24507H41.6697C42.0471 8.24507 42.3791 8.17715 42.6659 8.0413C42.9527 7.90545 43.1791 7.71677 43.3452 7.47526C43.5112 7.23375 43.5942 6.96205 43.5942 6.66016C43.5942 6.20733 43.4131 5.83752 43.0508 5.55073C42.7037 5.24884 42.2433 5.0979 41.6697 5.0979H39.5188V8.24507Z" fill="white"/><path d="M26.1486 17.3925C24.5637 17.3925 23.16 17.0453 21.9373 16.3509C20.7298 15.6415 19.7788 14.6755 19.0845 13.4528C18.3901 12.2151 18.043 10.7962 18.043 9.19623C18.043 7.59623 18.3901 6.18491 19.0845 4.96226C19.7788 3.72453 20.7298 2.75849 21.9373 2.06415C23.16 1.35472 24.5637 1 26.1486 1C27.3713 1 28.4732 1.21132 29.4543 1.63396C30.4354 2.0566 31.2807 2.64528 31.9901 3.4C32.6996 4.15472 33.243 5.03019 33.6203 6.02641L29.6354 7.29434C29.4241 6.79623 29.1524 6.36604 28.8203 6.00377C28.4883 5.62641 28.0958 5.33962 27.643 5.1434C27.2052 4.94717 26.7071 4.84906 26.1486 4.84906C25.409 4.84906 24.7524 5.03774 24.1788 5.41509C23.6052 5.77736 23.1524 6.28302 22.8203 6.93208C22.5033 7.58113 22.3449 8.33585 22.3449 9.19623C22.3449 10.0415 22.5109 10.7962 22.843 11.4604C23.175 12.1094 23.6279 12.6226 24.2015 13C24.7901 13.3623 25.4618 13.5434 26.2166 13.5434C26.8052 13.5434 27.3109 13.4453 27.7335 13.2491C28.1713 13.0377 28.5411 12.7509 28.843 12.3887C29.16 12.0113 29.4317 11.5736 29.6581 11.0755L33.643 12.3434C33.2807 13.3396 32.7449 14.2226 32.0354 14.9925C31.326 15.7472 30.4732 16.3358 29.4769 16.7585C28.4807 17.1811 27.3713 17.3925 26.1486 17.3925Z" fill="white"/><path d="M8.49057 17.3913C6.83019 17.3913 5.35849 17.0441 4.07547 16.3498C2.80755 15.6404 1.81132 14.6743 1.08679 13.4517C0.362264 12.2139 0 10.8026 0 9.21771C0 7.61771 0.362264 6.20639 1.08679 4.98375C1.81132 3.74601 2.80755 2.77997 4.07547 2.08564C5.3434 1.3762 6.8 1.02148 8.44528 1.02148C10.1057 1.02148 11.5698 1.3762 12.8377 2.08564C14.1057 2.77997 15.1019 3.74601 15.8264 4.98375C16.5509 6.20639 16.9132 7.61771 16.9132 9.21771C16.9132 10.8026 16.5509 12.2139 15.8264 13.4517C15.117 14.6743 14.1283 15.6404 12.8604 16.3498C11.5925 17.0441 10.1358 17.3913 8.49057 17.3913ZM8.49057 13.5422C9.30566 13.5422 10.0226 13.3611 10.6415 12.9988C11.2604 12.6215 11.7434 12.1083 12.0906 11.4592C12.4377 10.8102 12.6113 10.063 12.6113 9.21771C12.6113 8.37243 12.4302 7.62526 12.0679 6.9762C11.7208 6.31205 11.2302 5.79884 10.5962 5.43658C9.97736 5.05922 9.26038 4.87054 8.44528 4.87054C7.64528 4.87054 6.9283 5.05922 6.29434 5.43658C5.67547 5.79884 5.18491 6.31205 4.82264 6.9762C4.47547 7.62526 4.30189 8.37243 4.30189 9.21771C4.30189 10.063 4.48302 10.8102 4.84528 11.4592C5.20755 12.1083 5.69811 12.6215 6.31698 12.9988C6.95094 13.3611 7.67547 13.5422 8.49057 13.5422Z" fill="white"/><path d="M55.5736 7.63281H60.754V10.6517H54.9336L55.5736 7.63281Z" fill="white"/></svg>
+    </div>
+    <div class="footer-text-col">
+      <div class="footer-row">
+        <span class="footer-info">(주) 오씨메이커스</span>
+        <span class="footer-divider"></span>
+        <span class="footer-info">대표이사 : 주정연</span>
+        <span class="footer-divider"></span>
+        <span class="footer-info">주소 : 경기도 과천시 과천대로 7길 33, 디테크타워 A동 905호</span>
+      </div>
+      <div class="footer-row">
+        <span class="footer-info">사업자등록번호 : 821-87-00238</span>
+        <span class="footer-divider"></span>
+        <span class="footer-info">참가 및 관람 문의 : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5a292f2a2a35282e1a293f352f363336362f292e283b2e3335343c3b3328743935743128">[email&#160;protected]</a></span>
+        <span class="footer-divider"></span>
+        <span class="footer-info">제휴 문의 : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e898899a9c868d9a9b808198a89b8d879d848184849d9b9c9a899c8187868e89819ac68b87c6839a">[email&#160;protected]</a></span>
+        <span class="footer-divider"></span>
+        <span class="footer-info">오크레오 문의 : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aec1cddccbc1eec1cddccbc180c5dc">[email&#160;protected]</a></span>
+      </div>
+      <div class="footer-sub">THE SEOUL ILLUSTRATION FAIR</div>
+    </div>
+    <div class="footer-lang">
+      <span class="footer-lang-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0588 7.99988C15.0598 9.3866 14.6518 10.7429 13.8857 11.8991C13.1196 13.0554 12.0294 13.9603 10.7515 14.5009C9.47357 15.0414 8.06454 15.1935 6.70055 14.9383C5.33657 14.683 4.07813 14.0316 3.08256 13.0656C2.08699 12.0995 1.39844 10.8617 1.103 9.50677C0.807553 8.15185 0.918311 6.73996 1.42144 5.4476C1.92456 4.15523 2.79772 3.03973 3.93177 2.24052C5.06582 1.44131 6.41046 0.993862 7.79759 0.954101C7.93107 0.936849 8.06622 0.936849 8.1997 0.954101C10.0357 1.00513 11.7795 1.76966 13.0603 3.08519C14.3412 4.40073 15.0581 6.16444 15.0588 7.99988ZM5.63724 13.5845C5.78821 13.648 5.94127 13.7054 6.09641 13.7564C5.17165 12.1526 4.68808 10.3329 4.69481 8.4819H1.94867C2.03827 9.58801 2.42945 10.6485 3.07974 11.548C3.73003 12.4476 4.61455 13.1519 5.63724 13.5845ZM2.40607 5.6406C2.15594 6.23062 2.00212 6.8569 1.95046 7.4956H4.69481C4.68924 5.65578 5.16569 3.84655 6.0768 2.24779C5.92879 2.29709 5.78227 2.35233 5.63724 2.41351C4.18213 3.02977 3.02357 4.18687 2.40607 5.6406ZM10.3146 7.4956C10.2926 6.8044 10.2148 6.11612 10.0819 5.43746C9.95187 4.74313 9.73841 4.06704 9.44617 3.42387C9.04762 2.57567 8.54654 2.02237 8.11144 1.93862C8.03625 1.9375 7.96105 1.9375 7.88586 1.93862C7.45076 2.02237 6.94968 2.57566 6.55113 3.42476C6.25919 4.06797 6.04604 4.74406 5.91631 5.43835C5.78342 6.11672 5.7056 6.8047 5.6836 7.4956H10.3146ZM9.44617 12.5527C9.73844 11.9096 9.95189 11.2335 10.0819 10.5391C10.2144 9.86075 10.292 9.17277 10.3137 8.4819H5.68449C5.70647 9.17309 5.7843 9.86137 5.9172 10.54C6.04697 11.234 6.26012 11.9098 6.55202 12.5527C6.98623 13.4758 7.54081 14.0496 7.99998 14.0496C8.45916 14.0496 9.01374 13.4758 9.44706 12.5527H9.44617ZM13.5939 10.3592C13.8468 9.7622 14.0013 9.12823 14.0513 8.4819H11.3034C11.3105 10.3335 10.8269 12.1539 9.90178 13.7582C10.0569 13.7071 10.2106 13.6495 10.3627 13.5854C11.8177 12.9693 12.9762 11.8126 13.5939 10.3592ZM10.3627 2.41351C10.2175 2.35227 10.07 2.29669 9.9205 2.2469C10.8317 3.84562 11.3081 5.65488 11.3025 7.49471H14.0495C13.9564 6.39252 13.5638 5.33668 12.9141 4.44118C12.2643 3.54569 11.3821 2.84457 10.3627 2.41351Z" fill="white" stroke="white" stroke-width="0.2"/></svg></span>
+      <span class="footer-lang-text">English</span>
+    </div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+let selectedType=null, agreed=false;
+const typeLabels={tax:'세금계산서',cash_personal:'현금영수증 (개인소득공제)',cash_biz:'현금영수증 (지출증빙)'};
+const fairLabels={sifv21:'서울일러스트레이션페어 V.21',bifv7:'부산일러스트레이션페어 V.7'};
+const fairAmounts={sifv21:'₩792,000',bifv7:'₩1,683,000'};
+
+/* 페어 변경 */
+function onFairChange(){
+  const v=document.getElementById('fairSelect').value;
+  document.getElementById('payment-sifv21').style.display=v==='sifv21'?'block':'none';
+  document.getElementById('payment-bifv7').style.display=v==='bifv7'?'block':'none';
+}
+
+/* 증빙 유형 선택 */
+function selectType(type){
+  selectedType=type;
+  ['tax','cash_personal','cash_biz'].forEach(t=>document.getElementById('opt-'+t).classList.remove('selected'));
+  document.getElementById('opt-'+type).classList.add('selected');
+  document.querySelectorAll('.form-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('section-'+type).classList.add('active');
+  document.getElementById('agreeCard').style.display='block';
+  /* 사이드바 SEC 4 하이라이트 */
+  highlightSpec(4);
+  setTimeout(()=>document.getElementById('section-'+type).scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+/* 사이드바 섹션 하이라이트 */
+function highlightSpec(sec){
+  document.querySelectorAll('.spec-section').forEach(el=>el.classList.remove('highlight'));
+  const el=document.getElementById('spec-'+sec);
+  if(el) el.classList.add('highlight');
+}
+
+/* 스크롤에 따라 사이드바 섹션 하이라이트 */
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const sec=e.target.getAttribute('data-sec');
+      if(sec) highlightSpec(parseInt(sec));
+    }
+  });
+},{threshold:0.4});
+document.querySelectorAll('[data-sec]').forEach(el=>observer.observe(el));
+
+/* 동의 */
+function toggleAgree(){
+  agreed=!agreed;
+  document.getElementById('agreeCheckbox').classList.toggle('checked',agreed);
+  document.getElementById('submitBtn').disabled=!agreed;
+}
+
+/* 파일 */
+function handleFile(input,selId,nameId){
+  const f=input.files[0];if(!f)return;
+  document.getElementById(nameId).textContent=f.name;
+  document.getElementById(selId).style.display='flex';
+  input.parentElement.style.display='none';
+}
+function removeFile(inputId,selId){
+  document.getElementById(inputId).value='';
+  document.getElementById(selId).style.display='none';
+  document.getElementById(inputId).parentElement.style.display='block';
+}
+
+/* 제출 */
+function submitForm(){
+  if(!selectedType||!agreed)return;
+  const now=new Date(),pad=n=>String(n).padStart(2,'0');
+  const fv=document.getElementById('fairSelect').value;
+  document.getElementById('s-fair').textContent=fairLabels[fv];
+  document.getElementById('s-date').textContent=`${now.getFullYear()}.${pad(now.getMonth()+1)}.${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  document.getElementById('s-type').textContent=typeLabels[selectedType];
+  document.getElementById('s-amount').textContent=fairAmounts[fv];
+  document.getElementById('formArea').style.display='none';
+  document.getElementById('successCard').style.display='block';
+  document.getElementById('successCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* 자동 하이픈 */
+function fmtBiz(e){let v=e.target.value.replace(/\D/g,'');if(v.length>3&&v.length<=5)v=v.slice(0,3)+'-'+v.slice(3);else if(v.length>5)v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5,10);e.target.value=v;}
+function fmtPhone(e){let v=e.target.value.replace(/\D/g,'');if(v.length>3&&v.length<=7)v=v.slice(0,3)+'-'+v.slice(3);else if(v.length>7)v=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);e.target.value=v;}
+document.getElementById('bizNum1').addEventListener('input',fmtBiz);
+document.getElementById('bizNum2').addEventListener('input',fmtBiz);
+document.getElementById('receiptPhone').addEventListener('input',fmtPhone);
+</script>
+</body>
+</html>
